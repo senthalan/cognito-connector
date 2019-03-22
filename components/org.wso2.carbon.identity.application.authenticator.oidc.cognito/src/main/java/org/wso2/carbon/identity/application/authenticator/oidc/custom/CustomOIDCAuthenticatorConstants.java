@@ -39,6 +39,8 @@ public class CustomOIDCAuthenticatorConstants {
     public static final String OAUTH2_AUTHZ_URL = "OAuth2AuthzEPUrl";
     public static final String OAUTH2_TOKEN_URL = "OAuth2TokenEPUrl";
     public static final String IS_BASIC_AUTH_ENABLED = "IsBasicAuthEnabled";
+    public static final String LOGOUT_URL = "LogoutEPUrl";
+    public static final String LOGOUT_REDIRECT_URL = "LogoutRedirectUrl";
 
     public static final String OIDC_QUERY_PARAM_MAP_PROPERTY_KEY = "oidc:param.map";
 

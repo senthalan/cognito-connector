@@ -834,22 +834,37 @@ public class CustomOpenIDConnectAuthenticator extends AbstractApplicationAuthent
         tokenEpUrl.setDescription("Enter Cognito token endpoint url");
         configProperties.add(tokenEpUrl);
 
+        Property logoutUrl = new Property();
+        logoutUrl.setName(CustomOIDCAuthenticatorConstants.LOGOUT_URL);
+        logoutUrl.setDisplayName("Logout Endpoint URL");
+        logoutUrl.setRequired(true);
+        logoutUrl.setDescription("Enter Cognito logout endpoint url");
+        configProperties.add(logoutUrl);
+
+        Property logoutRedirectUrl = new Property();
+        logoutRedirectUrl.setName(CustomOIDCAuthenticatorConstants.LOGOUT_REDIRECT_URL);
+        logoutRedirectUrl.setDisplayName("Logout Redirect URL");
+        logoutRedirectUrl.setRequired(true);
+        logoutRedirectUrl.setDescription("Enter logout redirect url");
+        configProperties.add(logoutRedirectUrl);
+
         return configProperties;
     }
 
     protected void initiateLogoutRequest(HttpServletRequest request, HttpServletResponse response,
             AuthenticationContext context) throws LogoutFailedException {
+        if (log.isDebugEnabled()) {
+            log.debug("Sending logout request to external IDP");
+        }
         String clientId = context.getAuthenticatorProperties().get("ClientId");
-        String oauthzEPUrl = context.getAuthenticatorProperties().get("OAuth2AuthzEPUrl");
-        String logoutUrl = oauthzEPUrl.substring(0,oauthzEPUrl.indexOf("/oauth2"))+"/logout";
+        String logoutUrl = context.getAuthenticatorProperties().get(CustomOIDCAuthenticatorConstants.LOGOUT_URL);
+        String logoutRedirectUrl = context.getAuthenticatorProperties().get(CustomOIDCAuthenticatorConstants.LOGOUT_REDIRECT_URL);
 
         Map<String, String> parameters = new HashMap<>();
 
-        log.info("Inside Custom Cognito Authenticator............");
-
         try {
             parameters.put("client_id", clientId);
-            parameters.put("logout_uri", "https://localhost:9443/samlsso");
+            parameters.put("logout_uri", logoutRedirectUrl);
             response.sendRedirect(logoutUrl + "?" + getParamsString(parameters));
         } catch (IOException e) {
             throw new LogoutFailedException("Error while triggering cognito logout");
