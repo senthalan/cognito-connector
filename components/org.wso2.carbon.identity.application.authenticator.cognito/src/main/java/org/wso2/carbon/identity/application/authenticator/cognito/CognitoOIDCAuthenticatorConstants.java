@@ -23,22 +23,15 @@ public class CognitoOIDCAuthenticatorConstants {
     private CognitoOIDCAuthenticatorConstants() {
     }
 
-
-
-
     public static final String AUTHENTICATOR_NAME = "CognitoOpenIDConnectAuthenticator";
-    public static final String LOGIN_TYPE = "OIDC";
 
-    public static final String OAUTH2_GRANT_TYPE_CODE = "code";
-    public static final String OAUTH2_PARAM_STATE = "state";
-    public static final String OAUTH2_ERROR = "error";
     public static final Object COGNITO_LOGOUT = "logout";
     public static final String COGNITO_STATE = "state";
 
     public static final String CLIENT_ID = "ClientId";
     public static final String CLIENT_SECRET = "ClientSecret";
     public static final String CALLBACK_URL = "callbackUrl";
-    public static final String COGNITO_AUTHZ_DOMAIN_PREFIX = "DomainPrefix";
+    public static final String COGNITO_USER_POOL_DOMAIN = "UserPoolDomain";
     public static final String ADDITIONAL_QUERY_PARAMS = "AdditionalQueryParameters";
     public static final String CLAIM_DIALECT_URI_PARAMETER = "ClaimDialectUri";
     public static final String LOGOUT_REDIRECT_URL = "LogoutRedirectUrl";
@@ -51,4 +44,9 @@ public class CognitoOIDCAuthenticatorConstants {
     public static final String COGNITO_LOGOUT_CLIENT_ID = "client_id";
     public static final String COGNITO_LOGOUT_URI = "logout_uri";
     public static final String COGNITO_LOGOUT_STATE_COOKIE = "cognito-logout-state";
+
+    public static final String COGNITO_OAUTH_URL = "/oauth2/authorize";
+    public static final String COGNITO_TOKEN_URL = "/oauth2/token";
+    public static final String COGNITO_USER_INFO__URL = "/oauth2/userInfo";
+    public static final String COGNITO_LOGOUT__URL = "/logout";
 }

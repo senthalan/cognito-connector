@@ -17,6 +17,7 @@
  */
 package org.wso2.carbon.identity.application.authenticator.cognito;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.client.response.OAuthClientResponse;
@@ -44,6 +45,10 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
 
     private static final long serialVersionUID = 9058607724358986002L;
     private static Log log = LogFactory.getLog(CognitoOpenIDConnectAuthenticator.class);
+    private String tokenEndpoint;
+    private String oAuthEndpoint;
+    private String logoutEndpoint;
+    private String userInfoEnoint;
 
     @Override
     public boolean canHandle(HttpServletRequest request) {
@@ -57,16 +62,6 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
             return true;
         }
         return canHandle;
-    }
-
-    private String getLoginType(HttpServletRequest request) {
-
-        String state = request.getParameter(CognitoOIDCAuthenticatorConstants.OAUTH2_PARAM_STATE);
-        if (state != null) {
-            return state.split(",")[1];
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -111,22 +106,83 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         return claimDialectUri;
     }
 
+    private void initTokenEndpoint() {
+
+        this.tokenEndpoint = getAuthenticatorConfig().getParameterMap().get(CognitoOIDCAuthenticatorConstants
+                .COGNITO_TOKEN_ENDPOINT);
+        if (StringUtils.isBlank(this.tokenEndpoint)) {
+            this.tokenEndpoint = CognitoOIDCAuthenticatorConstants.COGNITO_TOKEN_URL;
+        }
+    }
+
+    private void initOAuthEndpoint() {
+
+        this.oAuthEndpoint = getAuthenticatorConfig().getParameterMap().get(CognitoOIDCAuthenticatorConstants
+                .COGNITO_AUTHZ_ENDPOINT);
+        if (StringUtils.isBlank(this.oAuthEndpoint)) {
+            this.oAuthEndpoint = CognitoOIDCAuthenticatorConstants.COGNITO_OAUTH_URL;
+        }
+    }
+
+    private void initLogoutURL() {
+
+        logoutEndpoint = getAuthenticatorConfig()
+                .getParameterMap()
+                .get(CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT_ENDPOINT);
+
+        if (logoutEndpoint == null) {
+            logoutEndpoint = CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT__URL;
+        }
+    }
+
+    private void initUserInfoURL() {
+
+        userInfoEnoint = getAuthenticatorConfig().getParameterMap()
+                .get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_INFO_ENDPOINT);
+
+        if (userInfoEnoint == null) {
+            userInfoEnoint = CognitoOIDCAuthenticatorConstants.COGNITO_USER_INFO__URL;
+        }
+    }
+
     @Override
     protected String getAuthorizationServerEndpoint(Map<String, String> authenticatorProperties) {
 
-        return authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_AUTHZ_ENDPOINT);
+        String domainName = authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_POOL_DOMAIN);
+        if (StringUtils.isBlank(this.oAuthEndpoint)) {
+            initOAuthEndpoint();
+        }
+        return "https://" + domainName + this.oAuthEndpoint;
     }
 
     @Override
     protected String getTokenEndpoint(Map<String, String> authenticatorProperties) {
 
-        return authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_TOKEN_ENDPOINT);
+        String domainName = authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_POOL_DOMAIN);
+        if (StringUtils.isBlank(this.tokenEndpoint)) {
+            initTokenEndpoint();
+        }
+        return "https://" + domainName + this.tokenEndpoint;
     }
 
     @Override
     protected String getUserInfoEndpoint(OAuthClientResponse token, Map<String, String> authenticatorProperties) {
 
-        return authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_INFO_ENDPOINT);
+        String domainName = authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_POOL_DOMAIN);
+        if (StringUtils.isBlank(this.userInfoEnoint)) {
+            initUserInfoURL();
+        }
+        return "https://" + domainName + this.userInfoEnoint;
+    }
+
+
+    private String getLogoutUrl(Map<String, String> authenticatorProperties) {
+
+        String domainName = authenticatorProperties.get(CognitoOIDCAuthenticatorConstants.COGNITO_USER_POOL_DOMAIN);
+        if (StringUtils.isBlank(this.logoutEndpoint)) {
+            initLogoutURL();
+        }
+        return "https://" + domainName + this.logoutEndpoint;
     }
 
     @Override
@@ -174,58 +230,42 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         callbackUrl.setName(CognitoOIDCAuthenticatorConstants.CALLBACK_URL);
         callbackUrl.setDescription("Enter value corresponding to callback url.");
         callbackUrl.setRequired(true);
-        callbackUrl.setDisplayOrder(4);
+        callbackUrl.setDisplayOrder(3);
         configProperties.add(callbackUrl);
 
         Property authzEpUrl = new Property();
-        authzEpUrl.setName(CognitoOIDCAuthenticatorConstants.COGNITO_AUTHZ_DOMAIN_PREFIX);
-        authzEpUrl.setDisplayName("Authorization Endpoint URL");
+        authzEpUrl.setName(CognitoOIDCAuthenticatorConstants.COGNITO_USER_POOL_DOMAIN);
+        authzEpUrl.setDisplayName("User Pool Domain");
         authzEpUrl.setRequired(true);
-        authzEpUrl.setDescription("Enter Cognito authorization endpoint url");
-        authzEpUrl.setDisplayOrder(5);
+        authzEpUrl.setDescription("Enter Cognito user pool domain");
+        authzEpUrl.setDisplayOrder(4);
         configProperties.add(authzEpUrl);
-
-        Property tokenEpUrl = new Property();
-        tokenEpUrl.setName(CognitoOIDCAuthenticatorConstants.COGNITO_TOKEN_ENDPOINT);
-        tokenEpUrl.setDisplayName("Token Endpoint URL");
-        tokenEpUrl.setRequired(true);
-        tokenEpUrl.setDescription("Enter Cognito token endpoint url");
-        tokenEpUrl.setDisplayOrder(4);
-        configProperties.add(tokenEpUrl);
-
-        Property logoutUrl = new Property();
-        logoutUrl.setName(CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT_ENDPOINT);
-        logoutUrl.setDisplayName("Logout Endpoint URL");
-        logoutUrl.setRequired(true);
-        logoutUrl.setDescription("Enter Cognito logout endpoint url");
-        logoutUrl.setDisplayOrder(6);
-        configProperties.add(logoutUrl);
 
         Property logoutRedirectUrl = new Property();
         logoutRedirectUrl.setName(CognitoOIDCAuthenticatorConstants.LOGOUT_REDIRECT_URL);
         logoutRedirectUrl.setDisplayName("Logout Redirect URL");
         logoutRedirectUrl.setRequired(true);
         logoutRedirectUrl.setDescription("Enter logout redirect url");
-        logoutRedirectUrl.setDisplayOrder(6);
+        logoutRedirectUrl.setDisplayOrder(5);
         configProperties.add(logoutRedirectUrl);
 
         Property scope = new Property();
         scope.setDisplayName("Additional Query Parameters");
         scope.setName(CognitoOIDCAuthenticatorConstants.ADDITIONAL_QUERY_PARAMS);
         scope.setDescription("Additional query parameters. e.g: paramName1=value1");
-        scope.setDisplayOrder(7);
+        scope.setDisplayOrder(6);
         configProperties.add(scope);
 
         return configProperties;
     }
 
-    @Override
-    protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
-                                                 AuthenticationContext context) throws AuthenticationFailedException {
-
-        FrameworkUtils.removeCookie(request, response, CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT_STATE_COOKIE);
-        super.initiateAuthenticationRequest(request, response, context);
-    }
+//    @Override
+//    protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
+//                                                 AuthenticationContext context) throws AuthenticationFailedException {
+//
+//        FrameworkUtils.removeCookie(request, response, CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT_STATE_COOKIE);
+//        super.initiateAuthenticationRequest(request, response, context);
+//    }
 
     @Override
     protected void initiateLogoutRequest(HttpServletRequest request, HttpServletResponse response,
@@ -235,8 +275,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
             log.debug("Sending logout request to external IDP");
         }
         String clientId = context.getAuthenticatorProperties().get(CognitoOIDCAuthenticatorConstants.CLIENT_ID);
-        String logoutUrl = context.getAuthenticatorProperties().get(CognitoOIDCAuthenticatorConstants
-                .COGNITO_LOGOUT_ENDPOINT);
+        String logoutUrl = getLogoutUrl(context.getAuthenticatorProperties());
         String logoutRedirectUrl = context.getAuthenticatorProperties().get(CognitoOIDCAuthenticatorConstants
                 .LOGOUT_REDIRECT_URL);
 
