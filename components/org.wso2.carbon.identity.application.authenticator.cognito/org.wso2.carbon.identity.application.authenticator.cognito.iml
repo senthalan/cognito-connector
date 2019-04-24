@@ -2,16 +2,17 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Osmorc" name="OSGi">
-      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="org.wso2.carbon.identity.application.authenticator.cogito-5.1.16.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.wso2.carbon.identity.application.authenticator.cogito" bundleVersion="5.1.16" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="org.wso2.carbon.identity.application.authenticator.cognito-5.1.16.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.wso2.carbon.identity.application.authenticator.cognito" bundleVersion="5.1.16" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
           <property key="Bundle-Vendor" value="WSO2" />
           <property key="Bundle-DocURL" value="http://www.wso2.org/" />
-          <property key="Bundle-Name" value="org.wso2.carbon.identity.application.authenticator.cogito" />
+          <property key="Bundle-Name" value="org.wso2.carbon.identity.application.authenticator.cognito" />
           <property key="Private-Package" value="org.wso2.carbon.identity.application.authenticator.cognito.internal" />
           <property key="Import-Package" value="javax.servlet.http; version=&quot;[2.6.0, 3.0.0)&quot;,org.apache.commons.lang; version=&quot;[2.6.0,3.0.0)&quot;,org.apache.commons.logging; version=&quot;[1.2,2.0)&quot;,org.apache.commons.codec.binary; version=&quot;[1.4.0,2.0.0)&quot;,org.osgi.framework; version=&quot;[1.7.0, 2.0.0)&quot;,org.osgi.service.component.*; version=&quot;[1.2.0, 2.0.0)&quot;,org.wso2.carbon.identity.application.authentication.framework.*;version=&quot;[5.12.153, 6.0.0)&quot;,org.wso2.carbon.identity.application.common.model;version=&quot;[5.12.153, 6.0.0)&quot;,org.wso2.carbon.identity.application.authenticator.oidc;version=&quot;[5.0.0, 6.0.0)&quot;,org.wso2.carbon.identity.core.util;version=&quot;[5.12.153, 6.0.0)&quot;," />
           <property key="Export-Package" value="!org.wso2.carbon.identity.application.authenticator.cognito.internal,org.wso2.carbon.identity.application.authenticator.cognito*" />
           <property key="DynamicImport-Package" value="*" />
           <property key="SCM-Revision" value="${buildNumber}" />
+          <property key="Include-Resource" value="META-INF/NOTICE=$MODULE_DIR$/target/maven-shared-archive-resources/META-INF/NOTICE,META-INF/LICENSE=$MODULE_DIR$/target/maven-shared-archive-resources/META-INF/LICENSE,META-INF/DEPENDENCIES=$MODULE_DIR$/target/maven-shared-archive-resources/META-INF/DEPENDENCIES" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>
@@ -24,6 +25,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/target/maven-shared-archive-resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
