@@ -24,7 +24,6 @@ import org.apache.oltu.oauth2.client.response.OAuthClientResponse;
 import org.wso2.carbon.identity.application.authentication.framework.config.builder.FileBasedConfigurationBuilder;
 import org.wso2.carbon.identity.application.authentication.framework.config.model.AuthenticatorConfig;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.LogoutFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
 import org.wso2.carbon.identity.application.authenticator.oidc.OpenIDConnectAuthenticator;
@@ -41,10 +40,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticator {
+public class CognitoOIDCAuthenticator extends OpenIDConnectAuthenticator {
 
     private static final long serialVersionUID = 9058607724358986002L;
-    private static Log log = LogFactory.getLog(CognitoOpenIDConnectAuthenticator.class);
+    private static Log log = LogFactory.getLog(CognitoOIDCAuthenticator.class);
     private String tokenEndpoint;
     private String oAuthEndpoint;
     private String logoutEndpoint;
@@ -54,7 +53,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
     public boolean canHandle(HttpServletRequest request) {
 
         if (log.isTraceEnabled()) {
-            log.trace("Inside CognitoOpenIDConnectAuthenticator.canHandle()");
+            log.trace("Inside CognitoOIDCAuthenticator.canHandle()");
         }
         boolean canHandle = super.canHandle(request);
         if (CognitoOIDCAuthenticatorConstants.COGNITO_LOGOUT.equals(request.getParameter
@@ -68,7 +67,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
     public String getContextIdentifier(HttpServletRequest request) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Inside CognitoOpenIDConnectAuthenticator.getContextIdentifier()");
+            log.debug("Inside CognitoOIDCAuthenticator.getContextIdentifier()");
         }
         Cookie cookie = FrameworkUtils.getCookie(request, CognitoOIDCAuthenticatorConstants
                 .COGNITO_LOGOUT_STATE_COOKIE);
@@ -152,7 +151,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         if (StringUtils.isBlank(this.oAuthEndpoint)) {
             initOAuthEndpoint();
         }
-        return "https://" + domainName + this.oAuthEndpoint;
+        return  domainName + this.oAuthEndpoint;
     }
 
     @Override
@@ -162,7 +161,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         if (StringUtils.isBlank(this.tokenEndpoint)) {
             initTokenEndpoint();
         }
-        return "https://" + domainName + this.tokenEndpoint;
+        return  domainName + this.tokenEndpoint;
     }
 
     @Override
@@ -172,7 +171,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         if (StringUtils.isBlank(this.userInfoEnoint)) {
             initUserInfoURL();
         }
-        return "https://" + domainName + this.userInfoEnoint;
+        return  domainName + this.userInfoEnoint;
     }
 
 
@@ -182,7 +181,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
         if (StringUtils.isBlank(this.logoutEndpoint)) {
             initLogoutURL();
         }
-        return "https://" + domainName + this.logoutEndpoint;
+        return  domainName + this.logoutEndpoint;
     }
 
     @Override
@@ -194,7 +193,7 @@ public class CognitoOpenIDConnectAuthenticator extends OpenIDConnectAuthenticato
     @Override
     public String getFriendlyName() {
 
-        return "Cognito";
+        return CognitoOIDCAuthenticatorConstants.COGNITO;
     }
 
     @Override

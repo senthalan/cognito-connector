@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
-import org.wso2.carbon.identity.application.authenticator.cognito.CognitoOpenIDConnectAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.cognito.CognitoOIDCAuthenticator;
 
 /**
  * @scr.component name="identity.application.authenticator.cognito.component"
@@ -34,9 +34,9 @@ public class CognitoOpenIDConnectAuthenticatorServiceComponent {
 //    @Activate
     protected void activate(ComponentContext ctxt) {
         try {
-            CognitoOpenIDConnectAuthenticator cognitoOpenIDConnectAuthenticator = new CognitoOpenIDConnectAuthenticator();
+            CognitoOIDCAuthenticator cognitoOIDCAuthenticator = new CognitoOIDCAuthenticator();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
-                    cognitoOpenIDConnectAuthenticator, null);
+                    cognitoOIDCAuthenticator, null);
             if (log.isDebugEnabled()) {
                 log.debug("OpenID Connect Authenticator bundle is activated");
             }

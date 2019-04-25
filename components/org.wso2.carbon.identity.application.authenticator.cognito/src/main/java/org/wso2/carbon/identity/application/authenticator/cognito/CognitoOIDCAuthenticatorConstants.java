@@ -23,7 +23,8 @@ public class CognitoOIDCAuthenticatorConstants {
     private CognitoOIDCAuthenticatorConstants() {
     }
 
-    public static final String AUTHENTICATOR_NAME = "CognitoOpenIDConnectAuthenticator";
+    public static final String AUTHENTICATOR_NAME = "CognitoOIDCAuthenticator";
+    public static final String COGNITO = "Cognito";
 
     public static final Object COGNITO_LOGOUT = "logout";
     public static final String COGNITO_STATE = "state";
